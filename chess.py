@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QWidget, QApplication
-from PyQt5.QtGui import QPainter, QColor, QBrush, QPen
+from PyQt5.QtGui import QPainter, QColor, QBrush, QPen, QImage
 from PyQt5.QtCore import Qt
 
 class Example(QWidget):
@@ -11,8 +11,7 @@ class Example(QWidget):
         self.flag = False
         self.x = 0
         self.y = 0    
-    def initUI(self):
-
+    def initUI(self):    
         self.setGeometry(300, 100, 800, 800)
         self.setWindowTitle('chess')
         self.show()
@@ -30,7 +29,12 @@ class Example(QWidget):
             self.paint.end()
             self.flag = False
 
+        painter = QPainter(self)
+        painter.drawImage(0, 100, QImage('/git/chess/figures/bP.png').scaled(100, 100))
+        painter.end()
+
     def drawRectangles(self, qp):
+
         col = QColor(0, 0, 0)
         col.setNamedColor('#d4d4d4')
         qp.setPen(col)
