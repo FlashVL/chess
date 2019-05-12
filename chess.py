@@ -44,8 +44,6 @@ class Example(QMainWindow):
             self.flag = False
             oldRect = Rect 
 
-
-
     def drawRectangles(self, qp):
 
         col = QColor(0, 0, 0)
