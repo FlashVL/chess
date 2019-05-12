@@ -24,25 +24,26 @@ class Example(QMainWindow):
         self.setWindowTitle('chess')
         self.show()
 
-    def paintEvent(self, e):
-        for i in range(8): 
-            for j in range(8):   
-                if (8 - i + 1 + j) % 2 == 0:
-                    Rect = QGraphicsRectItem(i*100, j*100, 100, 100)
-                    Rect.setBrush(QColor(101, 67, 33))
-
-                else:
-                    Rect = QGraphicsRectItem(i*100, j*100, 100, 100)
-                    Rect.setBrush(QColor(255, 255, 255)) 
-                self.scene.addItem(Rect)                             
+    def paintEvent(self, e):                   
         if self.flag:
             if self.oldRect != 0:
-                del self.oldRect 
+                self.oldRect.hide() 
             Rect = QGraphicsRectItem(self.x, self.y, 100, 100)
             Rect.setPen(QPen(Qt.red,  2,))
             self.scene.addItem(Rect)
             self.flag = False
-            oldRect = Rect 
+            self.oldRect = Rect
+        else:
+            for i in range(8): 
+                for j in range(8):   
+                    if (8 - i + 1 + j) % 2 == 0:
+                        Rect = QGraphicsRectItem(i*100, j*100, 100, 100)
+                        Rect.setBrush(QColor(101, 67, 33))
+
+                    else:
+                        Rect = QGraphicsRectItem(i*100, j*100, 100, 100)
+                        Rect.setBrush(QColor(255, 255, 255)) 
+                    self.scene.addItem(Rect)   
 
     def drawRectangles(self, qp):
 
