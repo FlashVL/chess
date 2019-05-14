@@ -5,14 +5,17 @@ from PyQt5.QtCore import *
 
 
 class Example(QMainWindow):
-
     def __init__(self):
         super().__init__()
         self.initUI()
         self.oldRect = 0
         self.flag = False
+        self.first = True
         self.x = 0
-        self.y = 0  
+        self.y = 0 
+        self.oldx = 0
+        self.oldy = 0   
+        self.oldFigures = None
         self.scene = QGraphicsScene()
         self.graphics_view = QGraphicsView()
         self.graphics_view.setScene(self.scene)
@@ -27,52 +30,51 @@ class Example(QMainWindow):
     def paintEvent(self, e):                   
         if self.flag:
             if self.oldRect != 0:
-                self.oldRect.hide() 
+                self.scene.removeItem(self.oldRect)
             Rect = QGraphicsRectItem(self.x, self.y, 100, 100)
             Rect.setPen(QPen(Qt.red,  2,))
             self.scene.addItem(Rect)
             self.flag = False
             self.oldRect = Rect
+
         else:
-            for i in range(8): 
-                for j in range(8):   
-                    if (8 - i + 1 + j) % 2 == 0:
-                        Rect = QGraphicsRectItem(i*100, j*100, 100, 100)
-                        Rect.setBrush(QColor(101, 67, 33))
+            if self.first:   
+                for i in range(8): 
+                    for j in range(8):   
+                        if (8 - i + 1 + j) % 2 == 0:
+                            Rect = QGraphicsRectItem(i*100, j*100, 100, 100)
+                            Rect.setBrush(QColor(101, 67, 33))
 
-                    else:
-                        Rect = QGraphicsRectItem(i*100, j*100, 100, 100)
-                        Rect.setBrush(QColor(255, 255, 255)) 
-                    self.scene.addItem(Rect)   
-
-    def drawRectangles(self, qp):
-
-        col = QColor(0, 0, 0)
-        col.setNamedColor('#d4d4d4')
-        qp.setPen(col)
-        k = 0
-        for i in range(8): 
-            for j in range(8):   
-                if (8 - i + 1 + j) % 2 == 0:
-                    qp.setBrush(QColor(101, 67, 33))
-                    qp.drawRect(i*100, j*100, 100, 100)
-                    k = 1
-                else:
-                    qp.setBrush(QColor(255, 255, 255))
-                    qp.drawRect(i*100, j*100, 100, 100)               
-                    k = 0
-                self.scene.addItem(qp)
-
+                        else:
+                            Rect = QGraphicsRectItem(i*100, j*100, 100, 100)
+                            Rect.setBrush(QColor(255, 255, 255)) 
+                        self.scene.addItem(Rect)   
+        
+                pawnW1 = QGraphicsPixmapItem(QPixmap('/git/chess/figures/bP.png').scaled(99, 99))
+                self.scene.addItem(pawnW1)  
+                pawnW1.setOffset(300, 300)
+                self.first = False
     def mousePressEvent(self, event):     
         self.x = int(event.pos().x() / 100) * 100
         self.y = int(event.pos().y() / 100) * 100
         self.flag = True
-        self.update()   
-    
-    def pawn(self):
-        painter = QPainter(self)
-        painter.drawImage(0, 100, QImage('/git/chess/figures/bP.png').scaled(100, 100))
-        painter.end()
+        
+   
+        
+        serh = True
+        it = self.graphics_view.items(self.x + 50, self.y + 50)
+        for k in it:
+            if str(type(k)) =="<class 'PyQt5.QtWidgets.QGraphicsPixmapItem'>":
+                self.oldFigures = k
+                serh = False
+        if serh and self.oldFigures != None:
+            self.oldFigures.setOffset(self.x, self.y)
+            self.oldFigures = None           
+        
+        self.oldx = self.x
+        self.oldy = self.y 
+        self.update() 
+
 
 app = QApplication(sys.argv)
 ex = Example()
